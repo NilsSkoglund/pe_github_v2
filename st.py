@@ -85,6 +85,13 @@ wells_dvt_name = "wells_dvt"
 
 ################################# PROGRAM #####################################
 
+# overview
+st.subheader("Mark when done")
+st.checkbox("Wells' PE")
+st.checkbox("Wells' DVT")
+st.checkbox("PERC")
+
+
 # wells' pe
 with st.expander("Wells' Criteria for PE"):
 	st.header("Wells' Criteria for PE")
