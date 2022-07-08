@@ -111,11 +111,18 @@ if "total_score_dvt" not in st.session_state:
 
 # overview
 st.subheader("Markera utförda steg")
-st.checkbox("Wells' PE")
-st.checkbox("Wells' DVT")
-st.checkbox("PERC")
-st.checkbox("D-Dimer")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+	st.checkbox("Wells' PE")
+with col2:
+	st.checkbox("Wells' DVT")
+with col3:
+	st.checkbox("PERC")
+with col4:
+	st.checkbox("D-Dimer")
 
+
+st.subheader("Formulär")
 
 # wells' pe
 with st.expander("Wells' Criteria for PE"):
