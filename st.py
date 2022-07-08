@@ -14,16 +14,16 @@ def calc_score(dct, name):
 			total_score += dct.get(question)
 	return total_score
 
-def display(total_score, green, yellow):
+def display(name, total_score, green, yellow):
 	'''
 	Display green/yellow/red status bar 
 	'''
 	if total_score < green:
-		return st.success("")
+		return st.success(f"{name} total poäng: {total_score} | Låg risk")
 	elif total_score < yellow:
-		return st.warning("")
+		return st.warning(f"{name} total poäng: {total_score} | Måttlig risk")
 	else: 
-		return st.error("")
+		return st.error(f"{name} total poäng: {total_score} | Hög risk")
 
 def initialize_keys(dct, name):
 	'''
@@ -83,13 +83,38 @@ wells_dvt_dct={
 	}
 wells_dvt_name = "wells_dvt"
 
-################################# PROGRAM #####################################
+# Initialize variables for PERC Rule for PE
+	# dct with question:score
+	# name for key
+perc_dct={
+	"Ålder ≥50":1,
+	"Puls över 100":1,
+	"Svullen vad (över 3cm) jämfört med andra benet":1,
+	"Collateral (nonvaricose) superficial veins present":1,
+	"Helt ben svullet":1,
+	"Localized tenderness along the deep venous system":1,
+	"Pitting edema, confined to symptomatic leg":1,
+	"Paralysis, paresis, or recent plaster immobilization of the lower extremity":1,
+	"Previously documented DVT":1, 
+	"Alternative diagnosis to DVT as likely or more likely":-2
+	}
+perc_name = "perc"
+
+# Initialize session variable for total score for Wells' PE & DVT form
+if "total_score_pe" not in st.session_state:
+	st.session_state["total_score_pe"] = 0
+
+if "total_score_dvt" not in st.session_state:
+	st.session_state["total_score_dvt"] = 0
+
+############################## PROGRAM & UI ###################################
 
 # overview
-st.subheader("Mark when done")
+st.subheader("Markera utförda steg")
 st.checkbox("Wells' PE")
 st.checkbox("Wells' DVT")
 st.checkbox("PERC")
+st.checkbox("D-Dimer")
 
 
 # wells' pe
@@ -97,9 +122,9 @@ with st.expander("Wells' Criteria for PE"):
 	st.header("Wells' Criteria for PE")
 	initialize_keys(wells_pe_dct, wells_pe_name)
 	create_checkboxes(wells_pe_dct, wells_pe_name)
-	total_score_pe = calc_score(wells_pe_dct, wells_pe_name)
-	st.write(total_score_pe)
-	display(total_score_pe, 2, 4)
+	st.session_state["total_score_pe"] = calc_score(wells_pe_dct, wells_pe_name)
+	st.write(st.session_state["total_score_pe"])
+	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 
 # wells' dvt
 with st.expander("Wells' Criteria for DVT"):
@@ -107,6 +132,12 @@ with st.expander("Wells' Criteria for DVT"):
 	st.info("Note: You get -2 points for Q10")
 	initialize_keys(wells_dvt_dct, wells_dvt_name)
 	create_checkboxes(wells_dvt_dct, wells_dvt_name)
-	total_score_dvt = calc_score(wells_dvt_dct, wells_dvt_name)
-	st.write(total_score_dvt)
-	display(total_score_dvt, 1, 3)
+	st.session_state["total_score_dvt"] = calc_score(wells_dvt_dct, wells_dvt_name)
+	st.write(st.session_state["total_score_dvt"])
+	display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
+
+
+
+st.subheader("Resultat")
+display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
