@@ -37,17 +37,41 @@ def initialize_keys(dct, name):
 			st.session_state[key] = False
 	return None
 
+def update_pe():
+	st.session_state["total_score_dvt"] =\
+		calc_score(wells_dvt_dct, wells_dvt_name)
+	if st.session_state["total_score_dvt"] > 0:
+		st.session_state["wells_pe0"] = True
+	else:
+		st.session_state["wells_pe0"] = False
+	return None
+		
+
 def create_checkboxes(dct, name):
 	'''
 	Generate checkboxes
 	'''
-	for index, question in enumerate(dct.items()):
-		st.checkbox(
-			label=f"{question[0]} ({question[1]})", 
-			key=f"{name}{index}"
-			)
+	if name == wells_dvt_name:
+		for index, question in enumerate(dct.items()):
+			st.checkbox(
+				label=f"{question[0]} ({question[1]})", 
+				key=f"{name}{index}",
+				on_change=update_pe
+				)
+	else:
+		for index, question in enumerate(dct.items()):
+			if index == 0:
+				st.checkbox(
+				label=f"{question[0]} ({question[1]})", 
+				key=f"{name}{index}",
+				help="Uppdateras baserat på input till DVT-formuläret"
+				)
+			else:
+				st.checkbox(
+					label=f"{question[0]} ({question[1]})", 
+					key=f"{name}{index}"
+					)
 	return None
-
 
 ############################### Variables #####################################
 
@@ -133,18 +157,18 @@ with st.expander("Wells' Criteria for PE"):
 	st.write(st.session_state["total_score_pe"])
 	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 
+
 # wells' dvt
 with st.expander("Wells' Criteria for DVT"):
-	st.header("Wells' Criteria for DVT")
-	st.info("Note: You get -2 points for Q10")
+	st.header("\n\nWells' Criteria for DVT")
+	st.info("Notera! Sista frågan ger -2 poäng")
 	initialize_keys(wells_dvt_dct, wells_dvt_name)
 	create_checkboxes(wells_dvt_dct, wells_dvt_name)
 	st.session_state["total_score_dvt"] = calc_score(wells_dvt_dct, wells_dvt_name)
 	st.write(st.session_state["total_score_dvt"])
 	display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
 
-
-
 st.subheader("Resultat")
 display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
+
