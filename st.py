@@ -73,6 +73,20 @@ def create_checkboxes(dct, name):
 					)
 	return None
 
+
+def change_pe_in_to_out():
+	if st.session_state["pe_mark_inside"]: 
+		st.session_state["pe_mark_outside"] = True
+	else:
+		st.session_state["pe_mark_outside"] = False
+	
+def change_pe_out_to_in():
+	if st.session_state["pe_mark_outside"]: 
+		st.session_state["pe_mark_inside"] = True
+	else:
+		st.session_state["pe_mark_inside"] = False
+	
+
 ############################### Variables #####################################
 
 # Initialize variables for Wells' Criteria for PE
@@ -131,15 +145,24 @@ if "total_score_pe" not in st.session_state:
 if "total_score_dvt" not in st.session_state:
 	st.session_state["total_score_dvt"] = 0
 
+# Initialize ...
+if "pe_mark_inside" not in st.session_state:
+	st.session_state["pe_mark_inside"] = False
+
+if "pe_mark_outside" not in st.session_state:
+	st.session_state["pe_mark_outside"] = False
+
 ############################## PROGRAM & UI ###################################
 
 # overview
 st.subheader("Markera utförda steg")
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-	st.checkbox("Wells' PE")
-with col2:
 	st.checkbox("Wells' DVT")
+with col2:
+	st.checkbox("Wells' PE",\
+		key="pe_mark_outside",\
+		on_change=change_pe_out_to_in)
 with col3:
 	st.checkbox("PERC")
 with col4:
@@ -148,18 +171,8 @@ with col4:
 
 st.subheader("Formulär")
 
-# wells' pe
-with st.expander("Wells' Criteria for PE"):
-	st.header("Wells' Criteria for PE")
-	initialize_keys(wells_pe_dct, wells_pe_name)
-	create_checkboxes(wells_pe_dct, wells_pe_name)
-	st.session_state["total_score_pe"] = calc_score(wells_pe_dct, wells_pe_name)
-	st.write(st.session_state["total_score_pe"])
-	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
-
-
 # wells' dvt
-with st.expander("Wells' Criteria for DVT"):
+with st.expander("Wells' Criteria for DVT", expanded=False):
 	st.header("\n\nWells' Criteria for DVT")
 	st.info("Notera! Sista frågan ger -2 poäng")
 	initialize_keys(wells_dvt_dct, wells_dvt_name)
@@ -168,7 +181,21 @@ with st.expander("Wells' Criteria for DVT"):
 	st.write(st.session_state["total_score_dvt"])
 	display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
 
+# wells' pe
+with st.expander("Wells' Criteria for PE"):
+	st.header("Wells' Criteria for PE")
+	initialize_keys(wells_pe_dct, wells_pe_name)
+	create_checkboxes(wells_pe_dct, wells_pe_name)
+	st.write("")
+	col1, col2, col3 = st.columns([3,1,3])
+	with col2:
+		st.checkbox("Klar", key = "pe_mark_inside", on_change=change_pe_in_to_out)
+	st.session_state["total_score_pe"] = calc_score(wells_pe_dct, wells_pe_name)
+	st.write(f"Poäng: {st.session_state['total_score_pe']} av 12.5")
+	#display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+
 st.subheader("Resultat")
 display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
+
 
