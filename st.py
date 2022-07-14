@@ -155,7 +155,7 @@ if "pe_mark_outside" not in st.session_state:
 ############################## PROGRAM & UI ###################################
 
 # overview
-st.subheader("Markera utförda steg")
+st.subheader("Utförda steg")
 col1, col2, col3, col4 = st.columns(4)
 with col1:
 	st.checkbox("Wells' DVT")
@@ -188,8 +188,9 @@ with st.expander("Wells' Criteria for PE"):
 	create_checkboxes(wells_pe_dct, wells_pe_name)
 	st.write("")
 	st.session_state["total_score_pe"] = calc_score(wells_pe_dct, wells_pe_name)
-	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+	#display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 	#st.write(f"Poäng: {st.session_state['total_score_pe']} av 12.5")
+	st.metric("Poäng:", f"{st.session_state['total_score_pe']} av 12.5")
 	col1, col2, col3 = st.columns([3,1,3])
 	with col2:
 		st.checkbox("Klar", key = "pe_mark_inside", on_change=change_pe_in_to_out)
@@ -198,7 +199,8 @@ with st.expander("Wells' Criteria for PE"):
 	
 
 st.subheader("Resultat")
-display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
-display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
+with st.expander("Visa resultat"):
+	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+	display("Wells' DVT", st.session_state["total_score_dvt"], 1, 3)
 
 
