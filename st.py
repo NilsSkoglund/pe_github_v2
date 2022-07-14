@@ -188,13 +188,14 @@ with st.expander("Wells' Criteria for PE"):
 	create_checkboxes(wells_pe_dct, wells_pe_name)
 	st.write("")
 	st.session_state["total_score_pe"] = calc_score(wells_pe_dct, wells_pe_name)
-	st.write(f"Poäng: {st.session_state['total_score_pe']} av 12.5")
+	display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+	#st.write(f"Poäng: {st.session_state['total_score_pe']} av 12.5")
 	col1, col2, col3 = st.columns([3,1,3])
 	with col2:
 		st.checkbox("Klar", key = "pe_mark_inside", on_change=change_pe_in_to_out)
 	
 	
-	#display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
+	
 
 st.subheader("Resultat")
 display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
