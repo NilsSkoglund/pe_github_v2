@@ -191,9 +191,7 @@ with st.expander("Wells' Criteria for PE"):
 	#display("Wells' PE", st.session_state["total_score_pe"], 2, 4)
 	#st.write(f"Poäng: {st.session_state['total_score_pe']} av 12.5")
 	st.metric("Poäng:", f"{st.session_state['total_score_pe']} av 12.5")
-	col1, col2, col3 = st.columns([3,1,3])
-	with col2:
-		st.checkbox("Klar", key = "pe_mark_inside", on_change=change_pe_in_to_out)
+	st.checkbox("Wells' PE klar", key = "pe_mark_inside", on_change=change_pe_in_to_out)
 	
 	
 	
